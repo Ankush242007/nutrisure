@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriSure - Certified Supplement Marketplace</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar">
+    🛡️ NutriSure • 100% Blind Testing & Supplement Certification • Choose Safe. Be Safe.
+  </div>
+
+  <!-- Navigation Bar (Module 1: User Navigation) -->
+  <header class="navbar">
+    <a href="index.html" class="logo">
+      Nutri<span>Sure</span>
+      <small>Choose Safe. Be Safe.</small>
+    </a>
+
+    <!-- 3 User Types Navigation Links -->
+    <nav class="nav-menu">
+      <a href="index.html" class="active">Home</a>
+      
+      <!-- Category Dropdown -->
+      <div class="dropdown">
+        <a href="#" class="dropdown-btn">Shop by Category ▾</a>
+        <div class="dropdown-content">
+          <a href="#" onclick="filterCategory('Protein', this)">Protein Powders</a>
+          <a href="#" onclick="filterCategory('Creatine', this)">Creatine</a>
+          <a href="#" onclick="filterCategory('Preworkout', this)">Preworkout</a>
+          <a href="#" onclick="filterCategory('Fish Oil', this)">Omega-3 Fish Oil</a>
+          <a href="#" onclick="filterCategory('Vitamins', this)">Multivitamins</a>
+        </div>
+      </div>
+
+      <!-- Module 2 Link: For Company -->
+      <a href="company.html" class="company-tab">For Company (Submit Product) 🏢</a>
+
+      <!-- Module 3 Link: Admin Panel -->
+      <a href="admin.html" class="admin-tab">Admin Panel 🔒</a>
+    </nav>
+
+    <!-- Cart & Login Actions -->
+    <div class="nav-right">
+      <button class="btn-cart" onclick="openCart()">🛒 Cart (<span id="cart-count">0</span>)</button>
+      <button class="btn-login" onclick="openLoginModal()">Login / Sign In</button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       USER MODULE CONTENT
+       ========================================================================= -->
+  <main>
+    
+    <!-- Hero Banner -->
+    <div class="hero">
+      <div class="hero-content">
+        <span class="tag">100% BLIND TESTING CERTIFIED</span>
+        <h1>PREMIUM PROTEIN <br><span class="green-text">UP TO 50% OFF</span></h1>
+        <p>Certified Pure Supplements. Tested in NABL Labs for 100% Label Accuracy & Zero Adulteration.</p>
+        <div class="hero-buttons">
+          <a href="#catalog" class="btn-main">View Certified Products</a>
+          <a href="company.html" class="btn-secondary">For Companies (Get Certified)</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Catalog Section -->
+    <div id="catalog" class="container">
+      
+      <div class="catalog-header">
+        <h2>Certified Supplements Marketplace</h2>
+        <p>Browse products verified for purity, true protein content, and zero heavy metals</p>
+      </div>
+
+      <!-- Filters: Budget vs Premium + Category Switcher -->
+      <div class="filter-row">
+        
+        <!-- Budget vs Premium Option -->
+        <div class="tier-switch">
+          <button class="filter-btn active" onclick="filterTier('all', this)">All Tiers</button>
+          <button class="filter-btn" onclick="filterTier('budget', this)">🏷️ Budget Friendly</button>
+          <button class="filter-btn" onclick="filterTier('premium', this)">⭐ Premium Tier</button>
+        </div>
+
+        <!-- Category Buttons -->
+        <div class="category-buttons">
+          <button class="cat-btn active" onclick="filterCategory('all', this)">All Categories</button>
+          <button class="cat-btn" onclick="filterCategory('Protein', this)">Protein</button>
+          <button class="cat-btn" onclick="filterCategory('Creatine', this)">Creatine</button>
+          <button class="cat-btn" onclick="filterCategory('Preworkout', this)">Preworkout</button>
+          <button class="cat-btn" onclick="filterCategory('Fish Oil', this)">Fish Oil</button>
+          <button class="cat-btn" onclick="filterCategory('Vitamins', this)">Vitamins</button>
+        </div>
+
+      </div>
+
+      <!-- Dynamic Product Cards Grid (Rendered by JavaScript) -->
+      <div id="product-grid" class="product-grid">
+        <!-- Products render here -->
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Product Details Modal Popup -->
+  <div id="product-modal" class="modal" onclick="if(event.target===this) closeProductModal()">
+    <div class="modal-box">
+      <button class="close-btn" onclick="closeProductModal()">✕</button>
+      <div id="modal-details"></div>
+    </div>
+  </div>
+
+  <!-- Shopping Cart Modal -->
+  <div id="cart-modal" class="modal" onclick="if(event.target===this) closeCart()">
+    <div class="modal-box max-400">
+      <button class="close-btn" onclick="closeCart()">✕</button>
+      <h3>🛒 Your Shopping Cart</h3>
+      <hr style="margin: 12px 0;">
+      <div id="cart-items">
+        <p style="color: #64748b; margin: 15px 0;">Your cart is empty.</p>
+      </div>
+      <div class="cart-total">
+        <strong>Subtotal:</strong>
+        <strong id="cart-total-price">₹0</strong>
+      </div>
+      <button class="btn-submit" onclick="alert('Proceeding to Checkout & Payment!'); closeCart();">Buy Now</button>
+    </div>
+  </div>
+
+  <!-- Login / Sign-Up Modal (Firebase Authentication) -->
+  <div id="login-modal" class="modal" onclick="if(event.target===this) closeLoginModal()">
+    <div class="modal-box max-400">
+      <button class="close-btn" onclick="closeLoginModal()">✕</button>
+      
+      <!-- Login vs Register Tabs -->
+      <div style="display: flex; gap: 8px; margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
+        <button id="tab-auth-login" class="admin-tab-btn active" style="flex: 1; padding: 6px;" onclick="toggleAuthMode('login')">Sign In</button>
+        <button id="tab-auth-signup" class="admin-tab-btn" style="flex: 1; padding: 6px;" onclick="toggleAuthMode('signup')">Create Account</button>
+      </div>
+
+      <p id="auth-subtitle" style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">Sign in with your Firebase credentials</p>
+      
+      <form onsubmit="handleAuthSubmit(event)">
+        <div class="form-group">
+          <label>Email Address <span style="color: #dc2626;">*</span></label>
+          <input type="email" id="user-email" placeholder="user@gmail.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password (Min 6 Characters) <span style="color: #dc2626;">*</span></label>
+          <input type="password" id="user-password" placeholder="••••••••" minlength="6" required>
+          <small style="color: #64748b; font-size: 0.75rem;">Firebase requires at least 6 characters.</small>
+        </div>
+        <button type="submit" id="auth-submit-btn" class="btn-submit">Sign In to Firebase</button>
+      </form>
+
+      <div style="text-align: center; margin: 12px 0; color: #94a3b8; font-size: 0.8rem;">— OR —</div>
+      <button class="btn-google" onclick="handleGoogleSignIn()">
+        🌐 Sign in with Google
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p><strong>NutriSure</strong> - 100% Blind Testing & Supplement Certification</p>
+      <p>Email: <a href="mailto:aboutus@nutrisure.com">aboutus@nutrisure.com</a> | Phone: +91 8088965492</p>
+      <p><small>© 2026 NutriSure Platform • Powered by Google Firebase</small></p>
+    </div>
+  </footer>
+
+  <!-- Google Firebase SDKs (v10 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

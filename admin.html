@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriSure - Admin Management Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-bar" style="background-color: #0f172a;">
+    🔒 NutriSure Admin Control Center • Restricted Authorization Required
+  </div>
+
+  <!-- Navigation Bar (Module 3: Admin Navigation) -->
+  <header class="navbar">
+    <a href="index.html" class="logo">
+      Nutri<span>Sure</span>
+      <small>Admin Management Portal</small>
+    </a>
+
+    <!-- 3 User Types Navigation Links -->
+    <nav class="nav-menu">
+      <a href="index.html">User Store 🛒</a>
+      <a href="company.html" class="company-tab">For Company (Submit Product) 🏢</a>
+      <a href="admin.html" class="admin-tab active">Admin Panel 🔒</a>
+    </nav>
+
+    <div class="nav-right">
+      <a href="index.html" class="btn-main" style="padding: 6px 14px; font-size: 0.85rem;">View Live Store</a>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       ADMIN MODULE CONTENT
+       ========================================================================= -->
+  <main class="container" style="padding: 30px 0 50px;">
+    
+    <!-- 1. Password Screen (Displayed when not logged in) -->
+    <div id="admin-pass-box" class="form-container max-600" style="text-align: center; margin-top: 50px;">
+      <div style="font-size: 3rem; margin-bottom: 10px;">🔐</div>
+      <h2 style="font-size: 1.5rem; color: #0f172a; margin-bottom: 6px;">Admin Authentication</h2>
+      <p style="color: #64748b; font-size: 0.88rem; margin-bottom: 20px;">
+        Enter your Admin Security Password to review company proposals and manage store products.
+      </p>
+
+      <form onsubmit="checkAdminPassword(event)">
+        <div class="form-group" style="max-width: 320px; margin: 0 auto 15px;">
+          <label for="admin-pass-input">Admin Password:</label>
+          <input type="password" id="admin-pass-input" placeholder="Enter password (e.g. admin123)" required style="text-align: center; letter-spacing: 2px;">
+        </div>
+        <button type="submit" class="btn-submit" style="max-width: 320px;">Unlock Admin Dashboard</button>
+      </form>
+      <small style="color: #94a3b8; display: block; margin-top: 15px;">Default BCA demo password: <strong>admin123</strong> or <strong>1234</strong></small>
+    </div>
+
+    <!-- 2. Admin Dashboard (Displayed after entering correct password) -->
+    <div id="admin-dashboard-box" class="form-container max-800" style="display: none;">
+      
+      <!-- Top Header with Logout -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">
+        <div>
+          <h2 style="font-size: 1.4rem; color: #0f172a; margin: 0;">🛡️ Admin Management Dashboard</h2>
+          <small style="color: #059669; font-weight: bold;">● Authenticated as Super Admin</small>
+        </div>
+        <button class="btn-secondary" style="color: #dc2626; border-color: #dc2626; padding: 6px 12px; font-size: 0.85rem;" onclick="logoutAdmin()">
+          Logout 🚪
+        </button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="admin-nav-tabs">
+        <button id="btn-tab-proposals" class="admin-tab-btn active" onclick="switchAdminTab('proposals')">
+          📋 Company Proposals Queue
+        </button>
+        <button id="btn-tab-add" class="admin-tab-btn" onclick="switchAdminTab('add')">
+          ➕ Add Product (With Image)
+        </button>
+        <button id="btn-tab-manage" class="admin-tab-btn" onclick="switchAdminTab('manage')">
+          🗑️ Manage Live Products
+        </button>
+        <button id="btn-tab-users" class="admin-tab-btn" onclick="switchAdminTab('users')">
+          👥 User Login Logs
+        </button>
+      </div>
+
+      <!-- TAB 1: Review Company Proposals (Accept / Reject) -->
+      <div id="admin-tab-proposals" class="admin-tab-content">
+        <h3 style="font-size: 1.15rem; color: #0f172a; margin-bottom: 6px;">Company Product Certification Proposals</h3>
+        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">
+          Review products submitted by supplement companies. Click <strong>Accept</strong> to certify and publish them to the live store, or <strong>Reject</strong> to decline.
+        </p>
+        
+        <div id="admin-proposals-queue">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+      </div>
+
+      <!-- TAB 2: Direct Add Product (With Image Option) -->
+      <div id="admin-tab-add" class="admin-tab-content" style="display: none;">
+        <h3 style="font-size: 1.15rem; color: #0f172a; margin-bottom: 6px;">Directly Add Product with Image</h3>
+        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">Add verified supplement listings directly into the customer marketplace:</p>
+
+        <form onsubmit="adminAddNewProduct(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="p-name">Product Name <span style="color: #dc2626;">*</span></label>
+              <input type="text" id="p-name" placeholder="e.g. Pure Whey Isolate 1kg" required>
+            </div>
+            <div class="form-group">
+              <label for="p-category">Category <span style="color: #dc2626;">*</span></label>
+              <select id="p-category" required>
+                <option value="Protein">Protein</option>
+                <option value="Creatine">Creatine</option>
+                <option value="Preworkout">Preworkout</option>
+                <option value="Fish Oil">Fish Oil</option>
+                <option value="Vitamins">Vitamins</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="p-tier">Price Tier <span style="color: #dc2626;">*</span></label>
+              <select id="p-tier" required>
+                <option value="budget">Budget Friendly (Value)</option>
+                <option value="premium">Premium Tier (Gold Standard)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="p-price">Selling Price (₹) <span style="color: #dc2626;">*</span></label>
+              <input type="number" id="p-price" placeholder="1999" required>
+            </div>
+          </div>
+
+          <!-- Product Image Options (File Upload + URL + Presets) -->
+          <div class="form-group" style="background: #f8fafc; border: 1px dashed #cbd5e1; padding: 12px; border-radius: 6px;">
+            <label style="color: #0f172a; margin-bottom: 6px;">🖼️ Product Image (Choose One Option):</label>
+            
+            <!-- Option A: File Upload from Computer -->
+            <div style="margin-bottom: 8px;">
+              <label for="p-image-file" style="font-weight: normal; font-size: 0.8rem; color: #475569;">Option A: Upload Image from Computer / Phone</label>
+              <input type="file" id="p-image-file" accept="image/*" onchange="handleImageFileUpload(event, 'p-image', 'admin-img-preview')">
+            </div>
+
+            <!-- Option B: Image URL -->
+            <div style="margin-bottom: 8px;">
+              <label for="p-image" style="font-weight: normal; font-size: 0.8rem; color: #475569;">Option B: Or Paste Image Web Link / Data URL</label>
+              <input type="text" id="p-image" placeholder="https://... (or choose preset below)" oninput="updateImagePreview(this.value, 'admin-img-preview')">
+            </div>
+
+            <!-- Option C: 1-Click Preset Images -->
+            <div>
+              <label style="font-weight: normal; font-size: 0.8rem; color: #475569; display: block; margin-bottom: 4px;">Option C: Or Select a Sample Preset Image:</label>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 8px; color: #0f172a; border-color: #cbd5e1;" onclick="setPresetImage('protein', 'p-image', 'admin-img-preview')">🥤 Whey Jar</button>
+                <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 8px; color: #0f172a; border-color: #cbd5e1;" onclick="setPresetImage('creatine', 'p-image', 'admin-img-preview')">⚡ Creatine Tub</button>
+                <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 8px; color: #0f172a; border-color: #cbd5e1;" onclick="setPresetImage('preworkout', 'p-image', 'admin-img-preview')">🔥 Preworkout</button>
+                <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 8px; color: #0f172a; border-color: #cbd5e1;" onclick="setPresetImage('fishoil', 'p-image', 'admin-img-preview')">🐟 Fish Oil Bottle</button>
+                <button type="button" class="btn-secondary" style="font-size: 0.75rem; padding: 4px 8px; color: #0f172a; border-color: #cbd5e1;" onclick="setPresetImage('vitamins', 'p-image', 'admin-img-preview')">💊 Vitamin Bottle</button>
+              </div>
+            </div>
+
+            <!-- Image Live Preview -->
+            <div id="admin-img-preview" style="display: none; margin-top: 10px; text-align: center; background: white; padding: 8px; border-radius: 4px; border: 1px solid #e2e8f0;">
+              <p style="font-size: 0.75rem; color: #059669; font-weight: bold; margin-bottom: 4px;">✓ Image Preview Loaded:</p>
+              <img id="admin-img-preview-tag" src="" alt="Preview" style="max-height: 100px; max-width: 100%; object-fit: contain;">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="p-lab">Verified Lab Tested Purity / Score</label>
+            <input type="text" id="p-lab" placeholder="e.g. 91.2% Real Protein (PASSED)" value="90.5% Real Protein (PASSED)">
+          </div>
+
+          <div class="form-group">
+            <label for="p-desc">Product Description <span style="color: #dc2626;">*</span></label>
+            <textarea id="p-desc" rows="3" placeholder="Enter product ingredients, benefits, and microfiltration details..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit">+ Add Product to Live Store</button>
+        </form>
+      </div>
+
+      <!-- TAB 3: Manage Live Products (Remove / Delete) -->
+      <div id="admin-tab-manage" class="admin-tab-content" style="display: none;">
+        <h3 style="font-size: 1.15rem; color: #0f172a; margin-bottom: 6px;">Manage Live Products in Store</h3>
+        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">Active products currently visible to customers. Click remove to delete any item:</p>
+        <div id="admin-product-list">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+      </div>
+
+      <!-- TAB 4: User Login Logs -->
+      <div id="admin-tab-users" class="admin-tab-content" style="display: none;">
+        <h3 style="font-size: 1.15rem; color: #0f172a; margin-bottom: 6px;">Registered & Logged In Users</h3>
+        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">User accounts and login activity logs:</p>
+        <div id="admin-users-list">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p><strong>NutriSure</strong> - 100% Blind Testing & Supplement Certification</p>
+      <p>Email: <a href="mailto:aboutus@nutrisure.com">aboutus@nutrisure.com</a> | Phone: +91 8088965492</p>
+      <p><small>© 2026 NutriSure Platform • Powered by Google Firebase</small></p>
+    </div>
+  </footer>
+
+  <!-- Google Firebase SDKs (v10 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
