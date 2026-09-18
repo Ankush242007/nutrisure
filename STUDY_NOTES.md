@@ -181,4 +181,7 @@ When adding a product (either directly by Admin in `admin.html` or via Company s
 > **Answer:** In the product objects, we store an optional `image` property containing a public image URL. In `renderProducts()`, JavaScript checks `if (p.image)` and displays the real image, falling back to clean icons if no image is supplied.
 
 ### Q4: How do the 3 modules share data without a heavy backend server?
-> **Answer:** They use the browser's **`localStorage` API**. When a company submits in `company.html`, the data is stored in `nutrisure_company_requests`. When the admin accepts in `admin.html`, it is transferred to `nutrisure_my_products`, making it immediately visible in `index.html`!
+> **Answer:** They use a dual-mode synchronization engine: Google Cloud Firestore for real-time cross-device cloud sync and the browser's `localStorage` API for offline execution.
+
+### Q5: How is Google Firebase integrated into this project?
+> **Answer:** We integrated **Firebase Authentication** for user logins (Email/Password & Google Sign-In) and **Cloud Firestore Database** for real-time synchronization. When an Admin adds or approves a product, Firestore's `onSnapshot` listener automatically updates the product catalog on all connected users' screens globally in real time.

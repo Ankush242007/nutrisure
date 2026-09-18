@@ -1,7 +1,7 @@
 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
 <head>
 <meta charset="utf-8">
-<title>NutriSure - Complete 3-Module BCA Project Documentation</title>
+<title>NutriSure - Complete 3-Module BCA Project Documentation (Firebase Integrated)</title>
 <!--[if gte mso 9]>
 <xml>
 <w:WordDocument>
@@ -99,12 +99,12 @@
   <!-- Title Header -->
   <div class="header-title">
     <h1>NutriSure</h1>
-    <p>3-Module Supplement Certification & E-Commerce Web Platform</p>
-    <p style="font-size: 10pt; color: #94a3b8;">BCA 2nd Year Project • User, Company & Admin Modules Documentation</p>
+    <p>3-Module Supplement Certification Platform (Firebase Powered)</p>
+    <p style="font-size: 10pt; color: #94a3b8;">BCA 2nd Year Project • User, Company & Admin Modules with Real-Time Cloud Sync</p>
   </div>
 
   <div class="highlight-box">
-    <strong>Project Summary:</strong> NutriSure is an independent supplement certification and marketplace platform. It features 3 distinct user interfaces: a Customer Marketplace (<code>index.html</code>), a Company Certification Proposal Portal with Status Tracking (<code>company.html</code>), and a Password-Protected Admin Dashboard with Accept/Reject Review and Product Image Support (<code>admin.html</code>).
+    <strong>Project Summary:</strong> NutriSure is an independent supplement certification and marketplace platform. Powered by Google Firebase Authentication and Cloud Firestore, it provides real-time cross-device data synchronization across three modules: User Marketplace (<code>index.html</code>), Company Proposal Portal (<code>company.html</code>), and Admin Management Panel (<code>admin.html</code>).
   </div>
 
   <!-- SECTION 1 -->
@@ -118,17 +118,17 @@
     <tr>
       <td><strong>1. Normal User (Customer)</strong></td>
       <td><code>index.html</code></td>
-      <td>Browses certified supplements, filters by Budget vs. Premium, filters by Category (Protein, Creatine, Preworkout, Fish Oil, Vitamins), views verified lab test certificates, adds items to cart, and proceeds to checkout.</td>
+      <td>Browses certified supplements, filters by Budget vs. Premium, filters by Category (Protein, Creatine, Preworkout, Fish Oil, Vitamins), views verified lab test certificates, adds items to cart, and signs in with Firebase Auth.</td>
     </tr>
     <tr>
       <td><strong>2. For Company (Brands)</strong></td>
       <td><code>company.html</code></td>
-      <td>Brands fill out the product proposal form (Name, Product Name, Email, Category, Price, Image, Product Description). Below the form, companies can view their submitted products with real-time status tracking: <strong>Pending 🟡</strong>, <strong>Accepted 🟢</strong>, or <strong>Rejected 🔴</strong>.</td>
+      <td>Brands fill out the product proposal form (Name, Product Name, Email, Category, Price, Image, Product Description). Below the form, companies can view their submitted products with real-time cloud status tracking: <strong>Pending 🟡</strong>, <strong>Accepted 🟢</strong>, or <strong>Rejected 🔴</strong>.</td>
     </tr>
     <tr>
       <td><strong>3. Admin (Superuser)</strong></td>
       <td><code>admin.html</code></td>
-      <td>Protected by password (<code>admin123</code>). Admin reviews pending company proposals with <strong>"✅ Accept & Add to Store"</strong> (which publishes the product to the live customer store) and <strong>"❌ Reject"</strong>. Admin can also add products directly with <strong>Product Images</strong> and remove live products.</td>
+      <td>Protected by password (<code>admin123</code>). Admin reviews pending company proposals with <strong>"✅ Accept & Add to Store"</strong> (which publishes the product to the live customer store via Firestore) and <strong>"❌ Reject"</strong>. Admin can also add products directly with <strong>Product Images</strong> and delete live products.</td>
     </tr>
   </table>
 
@@ -136,27 +136,26 @@
   <h1>2. Complete Workflow: Company Proposal to Admin Approval</h1>
   <ol>
     <li><strong>Step 1: Company Submits Product</strong><br>
-    A supplement manufacturer visits <code>company.html</code> and submits their product details (Name, Product Name, Email, Category, Description, Image URL). The application is saved in <code>localStorage</code> with status: <code>PENDING</code>.</li>
-    <li><strong>Step 2: Admin Receives Proposal</strong><br>
-    Admin logs into <code>admin.html</code> (Password: <code>admin123</code>). Under <strong>"Company Proposals Queue"</strong>, the admin sees the proposal with full details and image preview.</li>
+    A supplement manufacturer visits <code>company.html</code> and submits their product details. The application is pushed directly to Firebase Cloud Firestore (<code>company_requests</code> collection) with status: <code>PENDING</code>.</li>
+    <li><strong>Step 2: Admin Receives Proposal in Real Time</strong><br>
+    Admin logs into <code>admin.html</code> (Password: <code>admin123</code>). Firestore's real-time listener automatically renders the proposal on Admin's screen without page refresh.</li>
     <li><strong>Step 3: Admin Review (Accept or Reject)</strong><br>
     <ul>
-      <li>If Admin clicks <strong>"✅ Accept & Add to Store"</strong>: Admin enters the verified lab score (e.g. 91.2% Real Protein Passed). The product is automatically added into the live customer catalog (<code>index.html</code>), and status is updated to <code>ACCEPTED</code>.</li>
-      <li>If Admin clicks <strong>"❌ Reject"</strong>: The proposal status is updated to <code>REJECTED</code>.</li>
+      <li>If Admin clicks <strong>"✅ Accept & Add to Store"</strong>: Admin enters the verified lab score. The product is added to the <code>products</code> collection in Firestore, and status is updated to <code>ACCEPTED</code>.</li>
+      <li>If Admin clicks <strong>"❌ Reject"</strong>: The proposal status in Firestore is updated to <code>REJECTED</code>.</li>
     </ul>
     </li>
-    <li><strong>Step 4: Live Store Update & Company Tracking</strong><br>
-    Customers immediately see the approved product on <code>index.html</code> with its photo and certificate. The company can refresh <code>company.html</code> to see their 🟢 <strong>ACCEPTED</strong> status!</li>
+    <li><strong>Step 4: Real-Time Sync to All Friends & Devices</strong><br>
+    All customers globally immediately see the approved product on <code>index.html</code> on their mobiles and laptops!</li>
   </ol>
 
   <!-- SECTION 3 -->
-  <h1>3. Features in the Admin Module (admin.html)</h1>
+  <h1>3. Google Firebase Integration Architecture</h1>
   <ul>
-    <li><strong>Password Security Gate:</strong> PIN/Password check (<code>admin123</code> or <code>1234</code>) with persistent session handling and logout option.</li>
-    <li><strong>Company Proposals Queue:</strong> Interactive queue with Accept and Reject buttons.</li>
-    <li><strong>Direct Add Product (With Image Option):</strong> Form to add supplements directly to the store with custom <strong>Product Image URL</strong>, Name, Category, Tier, Price, Lab Score, and Description.</li>
-    <li><strong>Manage Live Products:</strong> List of all products on the live website with thumbnail image and <strong>"✕ Remove"</strong> delete button.</li>
-    <li><strong>User Login Logs:</strong> Records login email addresses and timestamps.</li>
+    <li><strong>Firebase Authentication:</strong> Secure user sign-in and account registration (Email/Password & Google Sign-In) with automatic session persistence.</li>
+    <li><strong>Cloud Firestore:</strong> Real-time NoSQL database storing <code>products</code>, <code>company_requests</code>, and <code>user_logins</code> collections.</li>
+    <li><strong>Real-time <code>onSnapshot</code> Listeners:</strong> Pushes new products, deletions, and status updates instantly to all connected web clients without page reloads.</li>
+    <li><strong>Offline Resiliency:</strong> If internet connectivity is interrupted, NutriSure seamlessly falls back to <code>localStorage</code> cache.</li>
   </ul>
 
   <!-- SECTION 4 -->
@@ -170,18 +169,18 @@
   </div>
 
   <div class="highlight-box">
-    <strong>Q2: What happens when the Admin clicks "Accept" on a company proposal?</strong><br>
-    <em>Answer:</em> When the Admin clicks "Accept", the JavaScript function <code>acceptCompanyProposal()</code> prompts for a verified lab score, creates a product object, saves it in <code>nutrisure_my_products</code> (making it immediately visible in the live store <code>index.html</code>), and updates the company's proposal status to <code>ACCEPTED</code>.
+    <strong>Q2: How does Google Firebase integrate into this project?</strong><br>
+    <em>Answer:</em> We integrated Firebase Authentication for user accounts and Cloud Firestore for real-time synchronization. When an Admin adds or accepts a product, Firestore pushes the update live to all connected devices without page reloading.
   </div>
 
   <div class="highlight-box">
     <strong>Q3: How is product image support implemented?</strong><br>
-    <em>Answer:</em> Each product object includes an optional <code>image</code> property containing a URL. The <code>renderProducts()</code> function checks if an image exists: if present, it renders an <code>&lt;img&gt;</code> tag with error handling; if absent, it falls back to category icons.
+    <em>Answer:</em> We support direct file uploads from computer/phone using the HTML5 <code>FileReader</code> API (converting photos to Base64 Data URLs), external image URLs, and built-in vector presets, with safe fallback handling on image load errors.
   </div>
 
   <hr style="margin-top: 30pt;">
   <p style="text-align: center; font-size: 9.5pt; color: #64748b;">
-    <strong>NutriSure 3-Module Documentation</strong> • Created for BCA 2nd Year Examination & Viva Demonstration
+    <strong>NutriSure Firebase Architecture Documentation</strong> • Created for BCA 2nd Year Examination & Viva Demonstration
   </p>
 
 </body>

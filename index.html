@@ -152,7 +152,7 @@
       </form>
 
       <div style="text-align: center; margin: 12px 0; color: #94a3b8; font-size: 0.8rem;">— OR —</div>
-      <button class="btn-google" onclick="alert('Google Firebase Auth Sign-in Triggered!'); closeLoginModal();">
+      <button class="btn-google" onclick="handleGoogleSignIn()">
         🌐 Sign in with Google
       </button>
     </div>
@@ -163,10 +163,14 @@
     <div class="container">
       <p><strong>NutriSure</strong> - 100% Blind Testing & Supplement Certification</p>
       <p>Email: <a href="mailto:aboutus@nutrisure.com">aboutus@nutrisure.com</a> | Phone: +91 8088965492</p>
-      <p><small>© 2026 NutriSure Platform • User Module</small></p>
+      <p><small>© 2026 NutriSure Platform • Powered by Google Firebase</small></p>
     </div>
   </footer>
 
+  <!-- Google Firebase SDKs (v10 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
