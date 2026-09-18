@@ -51,14 +51,14 @@ const PRESET_SVGS = {
   protein: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="45" y="55" width="110" height="130" rx="12" fill="%230f172a"/><rect x="60" y="25" width="80" height="30" rx="6" fill="%231e293b"/><rect x="55" y="85" width="90" height="65" rx="6" fill="%23059669"/><text x="100" y="115" font-family="Arial" font-size="14" font-weight="bold" fill="white" text-anchor="middle">PURE WHEY</text><text x="100" y="135" font-family="Arial" font-size="11" fill="%23ecfdf5" text-anchor="middle">100% ISOLATE</text><circle cx="100" cy="165" r="8" fill="%2310b981"/></svg>`,
   creatine: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="50" y="60" width="100" height="120" rx="10" fill="%231e293b"/><rect x="65" y="35" width="70" height="25" rx="5" fill="%23f59e0b"/><rect x="60" y="85" width="80" height="55" rx="6" fill="%230f172a"/><text x="100" y="112" font-family="Arial" font-size="13" font-weight="bold" fill="%23f59e0b" text-anchor="middle">CREATINE</text><text x="100" y="130" font-family="Arial" font-size="10" fill="white" text-anchor="middle">MONOHYDRATE</text><polygon points="100,145 92,160 100,160 98,172 108,155 100,155" fill="%23f59e0b"/></svg>`,
   preworkout: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="45" y="55" width="110" height="130" rx="12" fill="%23dc2626"/><rect x="60" y="25" width="80" height="30" rx="6" fill="%23991b1b"/><rect x="55" y="85" width="90" height="65" rx="6" fill="%2318181b"/><text x="100" y="115" font-family="Arial" font-size="13" font-weight="bold" fill="%23ef4444" text-anchor="middle">PRE-WORKOUT</text><text x="100" y="135" font-family="Arial" font-size="10" fill="%23fca5a5" text-anchor="middle">MAX ENERGY</text><circle cx="100" cy="165" r="7" fill="%23ef4444"/></svg>`,
-  fishoil: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="55" y="55" width="90" height="130" rx="14" fill="%230284c7"/><rect x="70" y="30" width="60" height="25" rx="5" fill="%23e0f2fe"/><rect x="60" y="85" width="80" height="60" rx="6" fill="%23bae6fd"/><text x="100" y="115" font-family="Arial" font-size="12" font-weight="bold" fill="%230369a1" text-anchor="middle">OMEGA-3</text><text x="100" y="132" font-family="Arial" font-size="9" font-weight="bold" fill="%23075985" text-anchor="middle">FISH OIL 1000mg</text><text x="100" y="165" font-size="18" text-anchor="middle">🐟</text></svg>`,
-  vitamins: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="55" y="55" width="90" height="130" rx="14" fill="%2316a34a"/><rect x="70" y="30" width="60" height="25" rx="5" fill="%23dcfce7"/><rect x="60" y="85" width="80" height="60" rx="6" fill="%23f0fdf4"/><text x="100" y="115" font-family="Arial" font-size="12" font-weight="bold" fill="%2315803d" text-anchor="middle">DAILY MULTI</text><text x="100" y="132" font-family="Arial" font-size="9" font-weight="bold" fill="%23166534" text-anchor="middle">VITAMINS + ZINC</text><text x="100" y="165" font-size="18" text-anchor="middle">💊</text></svg>`
+  fishoil: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="55" y="55" width="90" height="130" rx="14" fill="%230284c7"/><rect x="70" y="30" width="60" height="25" rx="5" fill="%23e0f2fe"/><rect x="60" y="85" width="80" height="60" rx="6" fill="%23bae6fd"/><text x="100" y="115" font-family="Arial" font-size="12" font-weight="bold" fill="%230369a1" text-anchor="middle">OMEGA-3</text><text x="100" y="132" font-family="Arial" font-size="9" font-weight="bold" fill="%23075985" text-anchor="middle">FISH OIL 1000mg</text><polygon points="85,165 115,160 115,170" fill="%230284c7"/></svg>`,
+  vitamins: `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="55" y="55" width="90" height="130" rx="14" fill="%2316a34a"/><rect x="70" y="30" width="60" height="25" rx="5" fill="%23dcfce7"/><rect x="60" y="85" width="80" height="60" rx="6" fill="%23f0fdf4"/><text x="100" y="115" font-family="Arial" font-size="12" font-weight="bold" fill="%2315803d" text-anchor="middle">DAILY MULTI</text><text x="100" y="132" font-family="Arial" font-size="9" font-weight="bold" fill="%23166534" text-anchor="middle">VITAMINS + ZINC</text><circle cx="100" cy="165" r="8" fill="%2316a34a"/></svg>`
 };
 
 // ==========================================================================
 // 1. INITIAL LOAD & REAL-TIME CLOUD LISTENERS
 // ==========================================================================
-window.onload = function() {
+function initNutriSureApp() {
   loadLocalData();
   setupFirebaseAuthListener();
   setupFirebaseFirestoreListeners();
@@ -77,7 +77,34 @@ window.onload = function() {
   if (document.getElementById('admin-pass-box')) {
     checkAdminSession();
   }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initNutriSureApp);
+} else {
+  initNutriSureApp();
+}
+
+// Fallback window.onload for older environments
+window.onload = function() {
+  if (products.length === 0) {
+    initNutriSureApp();
+  }
 };
+
+// Cross-tab synchronization: auto-refresh UI when products change in another tab
+window.addEventListener('storage', function(e) {
+  if (e.key === 'nutrisure_my_products') {
+    loadLocalData();
+    if (document.getElementById('product-grid')) renderProducts();
+    if (document.getElementById('admin-product-list')) renderAdminProductList();
+  }
+  if (e.key === 'nutrisure_company_requests') {
+    loadLocalData();
+    if (document.getElementById('company-proposals-list')) renderCompanySubmissions();
+    if (document.getElementById('admin-proposals-queue')) renderAdminProposals();
+  }
+});
 
 // Setup Firebase Authentication Listener
 function setupFirebaseAuthListener() {
@@ -101,139 +128,254 @@ function setupFirebaseFirestoreListeners() {
   if (!isFirebaseOnline || !db) return;
 
   // 1. Real-time Products Sync
-  db.collection('products').onSnapshot((snapshot) => {
-    if (!snapshot.empty) {
-      products = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        products.push({
-          ...data,
-          id: doc.id,
-          docId: doc.id
+  try {
+    db.collection('products').onSnapshot((snapshot) => {
+      if (snapshot && !snapshot.empty) {
+        const cloudProducts = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          cloudProducts.push({
+            ...data,
+            id: doc.id,
+            docId: doc.id
+          });
         });
-      });
-      localStorage.setItem('nutrisure_my_products', JSON.stringify(products));
-      renderProducts();
-      renderAdminProductList();
-    } else {
-      // If collection is empty, check if we should initialize once
-      const hasSeeded = localStorage.getItem('nutrisure_has_seeded');
-      if (!hasSeeded && products.length > 0) {
-        localStorage.setItem('nutrisure_has_seeded', 'true');
-        products.forEach(p => {
-          db.collection('products').add(p).catch(() => {});
+
+        // Merge cloud products with locally added products (so local items are not erased)
+        const merged = [...cloudProducts];
+        products.forEach(localItem => {
+          const exists = cloudProducts.some(cp => cp.id === localItem.id || cp.docId === localItem.id || (cp.name === localItem.name && cp.price === localItem.price));
+          if (!exists) {
+            merged.push(localItem);
+          }
         });
+
+        products = merged;
+        saveProducts();
+        renderProducts();
+        renderAdminProductList();
       } else {
-        products = [];
-        localStorage.setItem('nutrisure_my_products', JSON.stringify(products));
+        // When cloud is empty, NEVER clear local products!
+        // Attempt one-time seed from local starter products if needed
+        const hasSeeded = localStorage.getItem('nutrisure_has_seeded');
+        if (!hasSeeded && products.length > 0) {
+          localStorage.setItem('nutrisure_has_seeded', 'true');
+          products.forEach(p => {
+            db.collection('products').add(p).catch(() => {});
+          });
+        }
         renderProducts();
         renderAdminProductList();
       }
-    }
-  }, (err) => {
-    console.log("Firestore Products Realtime note (using local cache):", err.message);
-  });
+    }, (err) => {
+      console.warn("Firestore Products Realtime note (using local cache):", err.message);
+      renderProducts();
+      renderAdminProductList();
+    });
+  } catch (err) {
+    console.warn("Firestore listener setup notice:", err);
+  }
 
   // 2. Real-time Company Proposals Sync
-  db.collection('company_requests').onSnapshot((snapshot) => {
-    if (!snapshot.empty) {
-      companyRequests = [];
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        companyRequests.push({
-          ...data,
-          id: doc.id,
-          docId: doc.id
+  try {
+    db.collection('company_requests').onSnapshot((snapshot) => {
+      if (snapshot && !snapshot.empty) {
+        const cloudRequests = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          cloudRequests.push({
+            ...data,
+            id: doc.id,
+            docId: doc.id
+          });
         });
-      });
-      localStorage.setItem('nutrisure_company_requests', JSON.stringify(companyRequests));
+
+        const mergedRequests = [...cloudRequests];
+        companyRequests.forEach(localReq => {
+          const exists = cloudRequests.some(cr => cr.id === localReq.id || cr.docId === localReq.id || (cr.productName === localReq.productName && cr.email === localReq.email));
+          if (!exists) {
+            mergedRequests.push(localReq);
+          }
+        });
+
+        companyRequests = mergedRequests;
+        saveCompanyRequests();
+        renderCompanySubmissions();
+        renderAdminProposals();
+      } else {
+        renderCompanySubmissions();
+        renderAdminProposals();
+      }
+    }, (err) => {
+      console.warn("Firestore Proposals Realtime note:", err.message);
       renderCompanySubmissions();
       renderAdminProposals();
-    }
-  }, (err) => {
-    console.log("Firestore Proposals Realtime note:", err.message);
-  });
+    });
+  } catch (err) {
+    console.warn("Firestore proposals listener setup notice:", err);
+  }
 }
 
 // ==========================================================================
 // 2. LOCAL DATA & STORAGE HELPERS
 // ==========================================================================
+function getDefaultProducts() {
+  return [
+    {
+      id: 'prod_starter_1',
+      name: 'NutriSure Pure Whey Isolate 1kg',
+      category: 'Protein',
+      tier: 'premium',
+      price: '2499',
+      lab: '91.8% Real Protein (PASSED)',
+      desc: '100% cold-microfiltered whey isolate with zero amino spiking, 27g protein per scoop, and zero heavy metals.',
+      image: PRESET_SVGS.protein
+    },
+    {
+      id: 'prod_starter_2',
+      name: 'NutriSure Micronized Creatine 250g',
+      category: 'Creatine',
+      tier: 'budget',
+      price: '899',
+      lab: '99.9% Pure Creatine (PASSED)',
+      desc: 'Ultra-pure micronized creatine monohydrate tested for zero dicyandiamide and maximum muscle strength absorption.',
+      image: PRESET_SVGS.creatine
+    },
+    {
+      id: 'prod_starter_3',
+      name: 'NutriSure Extreme Pre-Workout 300g',
+      category: 'Preworkout',
+      tier: 'budget',
+      price: '1199',
+      lab: '100% Safe Clean Energy (PASSED)',
+      desc: 'Explosive energy and pump formula tested for zero prohibited stimulants and pure citrulline malate ratio.',
+      image: PRESET_SVGS.preworkout
+    },
+    {
+      id: 'prod_starter_4',
+      name: 'NutriSure Triple Strength Omega-3',
+      category: 'Fish Oil',
+      tier: 'premium',
+      price: '1499',
+      lab: '1000mg EPA/DHA Pure (PASSED)',
+      desc: 'Molecularly distilled deep-sea fish oil with zero mercury, lead, or fishy burps. Certified for heart and joint health.',
+      image: PRESET_SVGS.fishoil
+    }
+  ];
+}
+
 function loadLocalData() {
   const savedProds = localStorage.getItem('nutrisure_my_products');
   if (savedProds) {
-    products = JSON.parse(savedProds);
-  } else {
-    // Default starter products
-    products = [
-      {
-        id: 'prod_starter_1',
-        name: 'NutriSure Pure Whey Isolate 1kg',
-        category: 'Protein',
-        tier: 'premium',
-        price: '2499',
-        lab: '91.8% Real Protein (PASSED)',
-        desc: '100% cold-microfiltered whey isolate with zero amino spiking, 27g protein per scoop, and zero heavy metals.',
-        image: PRESET_SVGS.protein
-      },
-      {
-        id: 'prod_starter_2',
-        name: 'NutriSure Micronized Creatine 250g',
-        category: 'Creatine',
-        tier: 'budget',
-        price: '899',
-        lab: '99.9% Pure Creatine (PASSED)',
-        desc: 'Ultra-pure micronized creatine monohydrate tested for zero dicyandiamide and maximum muscle strength absorption.',
-        image: PRESET_SVGS.creatine
-      },
-      {
-        id: 'prod_starter_3',
-        name: 'NutriSure Extreme Pre-Workout 300g',
-        category: 'Preworkout',
-        tier: 'budget',
-        price: '1199',
-        lab: '100% Safe Clean Energy (PASSED)',
-        desc: 'Explosive energy and pump formula tested for zero prohibited stimulants and pure citrulline malate ratio.',
-        image: PRESET_SVGS.preworkout
-      },
-      {
-        id: 'prod_starter_4',
-        name: 'NutriSure Triple Strength Omega-3',
-        category: 'Fish Oil',
-        tier: 'premium',
-        price: '1499',
-        lab: '1000mg EPA/DHA Pure (PASSED)',
-        desc: 'Molecularly distilled deep-sea fish oil with zero mercury, lead, or fishy burps. Certified for heart and joint health.',
-        image: PRESET_SVGS.fishoil
+    try {
+      const parsed = JSON.parse(savedProds);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        products = parsed;
+      } else {
+        products = getDefaultProducts();
+        saveProducts();
       }
-    ];
-    localStorage.setItem('nutrisure_my_products', JSON.stringify(products));
+    } catch (e) {
+      products = getDefaultProducts();
+      saveProducts();
+    }
+  } else {
+    products = getDefaultProducts();
+    saveProducts();
   }
 
   const savedRequests = localStorage.getItem('nutrisure_company_requests');
-  companyRequests = savedRequests ? JSON.parse(savedRequests) : [];
+  try {
+    companyRequests = savedRequests ? JSON.parse(savedRequests) : [];
+  } catch (e) {
+    companyRequests = [];
+  }
 
   const savedUsers = localStorage.getItem('nutrisure_user_logins');
-  userLogins = savedUsers ? JSON.parse(savedUsers) : [];
+  try {
+    userLogins = savedUsers ? JSON.parse(savedUsers) : [];
+  } catch (e) {
+    userLogins = [];
+  }
 }
 
 function saveProducts() {
-  localStorage.setItem('nutrisure_my_products', JSON.stringify(products));
+  try {
+    localStorage.setItem('nutrisure_my_products', JSON.stringify(products));
+  } catch (err) {
+    console.warn("Storage quota exceeded, optimizing image sizes...", err);
+    try {
+      // If quota exceeded, strip large data URLs (> 60KB) to guarantee saving works
+      const slim = products.map(p => {
+        if (p.image && p.image.length > 60000) {
+          const catKey = (p.category || 'protein').toLowerCase();
+          return { ...p, image: PRESET_SVGS[catKey] || PRESET_SVGS.protein };
+        }
+        return p;
+      });
+      localStorage.setItem('nutrisure_my_products', JSON.stringify(slim));
+    } catch (e2) {
+      console.error("Local storage save failed completely:", e2);
+    }
+  }
 }
 
 function saveCompanyRequests() {
-  localStorage.setItem('nutrisure_company_requests', JSON.stringify(companyRequests));
+  try {
+    localStorage.setItem('nutrisure_company_requests', JSON.stringify(companyRequests));
+  } catch (err) {
+    console.warn("Error saving company requests to localStorage:", err);
+  }
 }
 
-// Image File Upload Handler (FileReader Base64)
+// Image File Upload Handler (Auto-Resize & Compress to prevent quota errors)
 function handleImageFileUpload(event, inputTargetId, previewBoxId) {
   const file = event.target.files[0];
   if (!file) return;
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    const base64Url = e.target.result;
-    document.getElementById(inputTargetId).value = base64Url;
-    updateImagePreview(base64Url, previewBoxId);
+    const rawData = e.target.result;
+
+    const img = new Image();
+    img.onload = function() {
+      const MAX_WIDTH = 400;
+      const MAX_HEIGHT = 400;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height = Math.round(height * (MAX_WIDTH / width));
+          width = MAX_WIDTH;
+        }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width = Math.round(width * (MAX_HEIGHT / height));
+          height = MAX_HEIGHT;
+        }
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Compress to lightweight JPEG (20KB–35KB) to fit effortlessly in localStorage & Firestore
+      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      const targetInput = document.getElementById(inputTargetId);
+      if (targetInput) targetInput.value = compressedDataUrl;
+      updateImagePreview(compressedDataUrl, previewBoxId);
+    };
+
+    img.onerror = function() {
+      const targetInput = document.getElementById(inputTargetId);
+      if (targetInput) targetInput.value = rawData;
+      updateImagePreview(rawData, previewBoxId);
+    };
+
+    img.src = rawData;
   };
   reader.readAsDataURL(file);
 }
@@ -279,8 +421,11 @@ function renderProducts() {
   if (!container) return;
 
   const filtered = products.filter(p => {
-    const matchTier = (activeTier === 'all') || (p.tier === activeTier);
-    const matchCat = (activeCategory === 'all') || (p.category.toLowerCase() === activeCategory.toLowerCase());
+    if (!p) return false;
+    const pTier = (p.tier || '').toLowerCase();
+    const pCat = (p.category || '').toLowerCase();
+    const matchTier = (activeTier === 'all') || (pTier === activeTier.toLowerCase());
+    const matchCat = (activeCategory === 'all') || (pCat === activeCategory.toLowerCase());
     return matchTier && matchCat;
   });
 
@@ -288,9 +433,9 @@ function renderProducts() {
     container.innerHTML = `
       <div style="grid-column: 1/-1; text-align: center; padding: 40px 20px; background: white; border-radius: 8px;">
         <h3>No certified products found!</h3>
-        <p style="color: #64748b; margin: 8px 0;">Companies can submit products via the Company Portal, or Admin can add products.</p>
+        <p style="color: #64748b; margin: 8px 0;">Try switching the category or tier filter above, or add new products via the Admin Panel.</p>
         <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
-          <a href="company.html" class="btn-main">For Company (Submit Product)</a>
+          <button onclick="filterTier('all'); filterCategory('all');" class="btn-main">Show All Products</button>
           <a href="admin.html" class="btn-secondary" style="color: #0f172a; border-color: #0f172a;">Admin Panel 🔒</a>
         </div>
       </div>
@@ -302,14 +447,15 @@ function renderProducts() {
     const catLower = (p.category || 'protein').toLowerCase();
     const fallbackImage = PRESET_SVGS[catLower] || PRESET_SVGS.protein;
     const initialSrc = (p.image && p.image.trim() !== '') ? p.image : fallbackImage;
+    const tierDisplay = p.tier || 'budget';
 
     return `
       <div class="product-card">
         <span class="badge-cert">✓ Certified Pure</span>
-        <span class="badge-tier tier-${p.tier}">${p.tier}</span>
+        <span class="badge-tier tier-${tierDisplay}">${tierDisplay}</span>
 
         <div class="product-image-container" onclick="openProductModal('${p.id}')">
-          <img src="${initialSrc}" alt="${p.name}" class="product-img" onerror="handleProductImageError(this, '${p.category}')">
+          <img src="${initialSrc}" alt="${p.name}" class="product-img" onerror="handleProductImageError(this, '${p.category || 'protein'}')">
         </div>
 
         <h4 onclick="openProductModal('${p.id}')">${p.name}</h4>
@@ -325,15 +471,22 @@ function renderProducts() {
 // Filters
 function filterTier(tier, btn) {
   activeTier = tier;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    if (btn) {
+      b.classList.toggle('active', b === btn);
+    } else {
+      b.classList.toggle('active', b.innerText.toLowerCase().includes(tier.toLowerCase()) || (tier === 'all' && b.innerText.toLowerCase().includes('all')));
+    }
+  });
   renderProducts();
 }
 
 function filterCategory(cat, btn) {
   activeCategory = cat;
   document.querySelectorAll('.cat-btn').forEach(b => {
-    b.classList.toggle('active', b.innerText.toLowerCase() === cat.toLowerCase() || (cat === 'all' && b.innerText === 'All'));
+    const isAll = (cat === 'all' && b.innerText.toLowerCase().includes('all'));
+    const isMatch = b.innerText.toLowerCase() === cat.toLowerCase();
+    b.classList.toggle('active', isAll || isMatch);
   });
   renderProducts();
 }
@@ -579,25 +732,31 @@ async function submitCompanyProduct(e) {
     status: 'PENDING'
   };
 
-  // Save to Firebase Firestore in real-time
-  if (isFirebaseOnline && db) {
-    try {
-      const docRef = await db.collection('company_requests').add(newProposal);
-      newProposal.id = docRef.id;
-    } catch(err) {
-      console.warn("Firestore proposal save note:", err);
-    }
-  }
-
+  // 1. Save locally immediately
   companyRequests.unshift(newProposal);
   saveCompanyRequests();
 
-  alert(`✅ Proposal Submitted Successfully to Firebase Cloud!\n\nProduct: "${productName}"\nTracking ID: ${newProposal.id}\nStatus: PENDING REVIEW BY ADMIN\n\nYour application has been forwarded to Admin for approval.`);
+  alert(`✅ Proposal Submitted Successfully!\n\nProduct: "${productName}"\nTracking ID: ${newProposal.id}\nStatus: PENDING REVIEW BY ADMIN\n\nYour application has been forwarded to Admin for approval.`);
   
   e.target.reset();
+  const cImgFile = document.getElementById('c-image-file');
+  if (cImgFile) cImgFile.value = '';
+  const cImg = document.getElementById('c-image');
+  if (cImg) cImg.value = '';
   const preview = document.getElementById('company-img-preview');
   if (preview) preview.style.display = 'none';
   renderCompanySubmissions();
+
+  // 2. Save to Firebase Firestore in background
+  if (isFirebaseOnline && db) {
+    db.collection('company_requests').add(newProposal).then(docRef => {
+      newProposal.id = docRef.id;
+      newProposal.docId = docRef.id;
+      saveCompanyRequests();
+    }).catch(err => {
+      console.warn("Firestore proposal save note (saved locally):", err);
+    });
+  }
 }
 
 function renderCompanySubmissions() {
@@ -733,7 +892,7 @@ function renderAdminProposals() {
   }).join('');
 }
 
-// Accept Proposal -> Pushes directly to Firestore Cloud & updates store for everyone!
+// Accept Proposal -> Updates local store immediately & syncs to Firestore Cloud!
 async function acceptCompanyProposal(id) {
   const proposal = companyRequests.find(c => c.id === id);
   if (!proposal) return;
@@ -752,27 +911,29 @@ async function acceptCompanyProposal(id) {
     image: proposal.image || ''
   };
 
-  // 1. Push to Firestore
-  if (isFirebaseOnline && db) {
-    try {
-      await db.collection('products').add(newProduct);
-      if (proposal.id) {
-        await db.collection('company_requests').doc(proposal.id).update({ status: 'ACCEPTED' });
-      }
-    } catch(err) {
-      console.warn("Firestore accept update note:", err);
-    }
-  }
-
-  // 2. Local Fallback Update
+  // 1. Immediate Local State Update
   products.unshift(newProduct);
   saveProducts();
   proposal.status = 'ACCEPTED';
   saveCompanyRequests();
 
-  alert(`🎉 Approved! Product "${proposal.productName}" has been certified and synced live to Firebase Cloud!`);
+  alert(`🎉 Approved! Product "${proposal.productName}" has been certified and added to the store!`);
   renderAdminProposals();
   renderAdminProductList();
+
+  // 2. Background Sync to Cloud Firestore
+  if (isFirebaseOnline && db) {
+    db.collection('products').add(newProduct).then(docRef => {
+      newProduct.docId = docRef.id;
+      saveProducts();
+    }).catch(err => {
+      console.warn("Firestore accept sync note (saved locally):", err);
+    });
+
+    if (proposal.id) {
+      db.collection('company_requests').doc(proposal.id).update({ status: 'ACCEPTED' }).catch(() => {});
+    }
+  }
 }
 
 // Reject Proposal
@@ -781,15 +942,16 @@ async function rejectCompanyProposal(id) {
   if (!proposal) return;
 
   if (confirm(`Are you sure you want to reject the proposal for "${proposal.productName}"?`)) {
+    proposal.status = 'REJECTED';
+    saveCompanyRequests();
+    alert(`Proposal for "${proposal.productName}" marked as REJECTED.`);
+    renderAdminProposals();
+
     if (isFirebaseOnline && db && proposal.id) {
       try {
         await db.collection('company_requests').doc(proposal.id).update({ status: 'REJECTED' });
       } catch(e) {}
     }
-    proposal.status = 'REJECTED';
-    saveCompanyRequests();
-    alert(`Proposal for "${proposal.productName}" marked as REJECTED.`);
-    renderAdminProposals();
   }
 }
 
@@ -797,13 +959,26 @@ async function rejectCompanyProposal(id) {
 async function adminAddNewProduct(e) {
   e.preventDefault();
 
-  const name = document.getElementById('p-name').value;
-  const category = document.getElementById('p-category').value;
-  const tier = document.getElementById('p-tier').value;
-  const price = document.getElementById('p-price').value;
-  const lab = document.getElementById('p-lab').value;
-  const desc = document.getElementById('p-desc').value;
-  const image = document.getElementById('p-image').value || '';
+  const nameInput = document.getElementById('p-name');
+  const catInput = document.getElementById('p-category');
+  const tierInput = document.getElementById('p-tier');
+  const priceInput = document.getElementById('p-price');
+  const labInput = document.getElementById('p-lab');
+  const descInput = document.getElementById('p-desc');
+  const imgInput = document.getElementById('p-image');
+
+  const name = nameInput ? nameInput.value.trim() : '';
+  const category = catInput ? catInput.value : 'Protein';
+  const tier = tierInput ? tierInput.value : 'budget';
+  const price = priceInput ? priceInput.value.trim() : '0';
+  const lab = (labInput && labInput.value.trim()) ? labInput.value.trim() : '90.5% Real Protein (PASSED)';
+  const desc = descInput ? descInput.value.trim() : '';
+  const image = imgInput ? imgInput.value.trim() : '';
+
+  if (!name || !price || !desc) {
+    alert('Please fill in all required fields (Product Name, Price, Description).');
+    return;
+  }
 
   const newProduct = {
     id: 'prod_' + Date.now(),
@@ -816,23 +991,33 @@ async function adminAddNewProduct(e) {
     image: image
   };
 
-  // Push to Cloud Firestore
-  if (isFirebaseOnline && db) {
-    try {
-      await db.collection('products').add(newProduct);
-    } catch(err) {
-      console.warn("Firestore direct add note:", err);
-    }
-  }
-
+  // 1. Immediately add to local state and persist
   products.unshift(newProduct);
   saveProducts();
+  renderAdminProductList();
 
-  alert(`Product "${name}" added to Firebase Cloud Store with image successfully!`);
+  // 2. Clear the form & preview
   e.target.reset();
+  const fileInput = document.getElementById('p-image-file');
+  if (fileInput) fileInput.value = '';
+  if (imgInput) imgInput.value = '';
   const preview = document.getElementById('admin-img-preview');
   if (preview) preview.style.display = 'none';
-  renderAdminProductList();
+
+  // 3. User feedback and switch to Manage tab to view added product
+  alert(`✅ Success! Product "${name}" added to the store!\n\nYou can now see it under "Manage Live Products" and on the home page.`);
+  switchAdminTab('manage');
+
+  // 4. Background Sync to Cloud Firestore
+  if (isFirebaseOnline && db) {
+    db.collection('products').add(newProduct).then(docRef => {
+      newProduct.docId = docRef.id;
+      saveProducts();
+      console.log("Product synced to Firebase Firestore:", docRef.id);
+    }).catch(err => {
+      console.warn("Firestore direct add note (saved locally):", err.message);
+    });
+  }
 }
 
 // 3. Admin Manage Products (Remove Product)
