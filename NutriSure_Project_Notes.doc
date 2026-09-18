@@ -1,0 +1,188 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset="utf-8">
+<title>NutriSure - Complete 3-Module BCA Project Documentation</title>
+<!--[if gte mso 9]>
+<xml>
+<w:WordDocument>
+<w:View>Print</w:View>
+<w:Zoom>100</w:Zoom>
+<w:DoNotOptimizeForBrowser/>
+</w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+  body {
+    font-family: 'Calibri', 'Arial', sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #1f2937;
+    margin: 30px;
+  }
+  h1 {
+    color: #047857;
+    font-size: 22pt;
+    font-weight: bold;
+    border-bottom: 2px solid #059669;
+    padding-bottom: 8px;
+    margin-top: 20pt;
+    margin-bottom: 10pt;
+  }
+  h2 {
+    color: #0f172a;
+    font-size: 15pt;
+    font-weight: bold;
+    border-bottom: 1px solid #cbd5e1;
+    padding-bottom: 4px;
+    margin-top: 18pt;
+    margin-bottom: 8pt;
+  }
+  h3 {
+    color: #047857;
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 14pt;
+    margin-bottom: 6pt;
+  }
+  p {
+    margin-bottom: 8pt;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10pt;
+    margin-bottom: 14pt;
+  }
+  th, td {
+    border: 1px solid #94a3b8;
+    padding: 8px 10px;
+    font-size: 10pt;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background-color: #f1f5f9;
+    color: #0f172a;
+    font-weight: bold;
+  }
+  .highlight-box {
+    background-color: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-left: 5px solid #10b981;
+    padding: 10px 14px;
+    margin: 12pt 0;
+    border-radius: 4px;
+  }
+  .header-title {
+    text-align: center;
+    background-color: #0f172a;
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 25pt;
+  }
+  .header-title h1 {
+    color: #10b981;
+    border: none;
+    margin: 0;
+    font-size: 26pt;
+  }
+  .header-title p {
+    color: #cbd5e1;
+    margin: 4px 0 0;
+    font-size: 12pt;
+  }
+</style>
+</head>
+<body>
+
+  <!-- Title Header -->
+  <div class="header-title">
+    <h1>NutriSure</h1>
+    <p>3-Module Supplement Certification & E-Commerce Web Platform</p>
+    <p style="font-size: 10pt; color: #94a3b8;">BCA 2nd Year Project • User, Company & Admin Modules Documentation</p>
+  </div>
+
+  <div class="highlight-box">
+    <strong>Project Summary:</strong> NutriSure is an independent supplement certification and marketplace platform. It features 3 distinct user interfaces: a Customer Marketplace (<code>index.html</code>), a Company Certification Proposal Portal with Status Tracking (<code>company.html</code>), and a Password-Protected Admin Dashboard with Accept/Reject Review and Product Image Support (<code>admin.html</code>).
+  </div>
+
+  <!-- SECTION 1 -->
+  <h1>1. The 3 Types of Users in NutriSure</h1>
+  <table>
+    <tr>
+      <th style="width: 25%;">User Type</th>
+      <th style="width: 20%;">HTML Module</th>
+      <th>Features & Responsibilities</th>
+    </tr>
+    <tr>
+      <td><strong>1. Normal User (Customer)</strong></td>
+      <td><code>index.html</code></td>
+      <td>Browses certified supplements, filters by Budget vs. Premium, filters by Category (Protein, Creatine, Preworkout, Fish Oil, Vitamins), views verified lab test certificates, adds items to cart, and proceeds to checkout.</td>
+    </tr>
+    <tr>
+      <td><strong>2. For Company (Brands)</strong></td>
+      <td><code>company.html</code></td>
+      <td>Brands fill out the product proposal form (Name, Product Name, Email, Category, Price, Image, Product Description). Below the form, companies can view their submitted products with real-time status tracking: <strong>Pending 🟡</strong>, <strong>Accepted 🟢</strong>, or <strong>Rejected 🔴</strong>.</td>
+    </tr>
+    <tr>
+      <td><strong>3. Admin (Superuser)</strong></td>
+      <td><code>admin.html</code></td>
+      <td>Protected by password (<code>admin123</code>). Admin reviews pending company proposals with <strong>"✅ Accept & Add to Store"</strong> (which publishes the product to the live customer store) and <strong>"❌ Reject"</strong>. Admin can also add products directly with <strong>Product Images</strong> and remove live products.</td>
+    </tr>
+  </table>
+
+  <!-- SECTION 2 -->
+  <h1>2. Complete Workflow: Company Proposal to Admin Approval</h1>
+  <ol>
+    <li><strong>Step 1: Company Submits Product</strong><br>
+    A supplement manufacturer visits <code>company.html</code> and submits their product details (Name, Product Name, Email, Category, Description, Image URL). The application is saved in <code>localStorage</code> with status: <code>PENDING</code>.</li>
+    <li><strong>Step 2: Admin Receives Proposal</strong><br>
+    Admin logs into <code>admin.html</code> (Password: <code>admin123</code>). Under <strong>"Company Proposals Queue"</strong>, the admin sees the proposal with full details and image preview.</li>
+    <li><strong>Step 3: Admin Review (Accept or Reject)</strong><br>
+    <ul>
+      <li>If Admin clicks <strong>"✅ Accept & Add to Store"</strong>: Admin enters the verified lab score (e.g. 91.2% Real Protein Passed). The product is automatically added into the live customer catalog (<code>index.html</code>), and status is updated to <code>ACCEPTED</code>.</li>
+      <li>If Admin clicks <strong>"❌ Reject"</strong>: The proposal status is updated to <code>REJECTED</code>.</li>
+    </ul>
+    </li>
+    <li><strong>Step 4: Live Store Update & Company Tracking</strong><br>
+    Customers immediately see the approved product on <code>index.html</code> with its photo and certificate. The company can refresh <code>company.html</code> to see their 🟢 <strong>ACCEPTED</strong> status!</li>
+  </ol>
+
+  <!-- SECTION 3 -->
+  <h1>3. Features in the Admin Module (admin.html)</h1>
+  <ul>
+    <li><strong>Password Security Gate:</strong> PIN/Password check (<code>admin123</code> or <code>1234</code>) with persistent session handling and logout option.</li>
+    <li><strong>Company Proposals Queue:</strong> Interactive queue with Accept and Reject buttons.</li>
+    <li><strong>Direct Add Product (With Image Option):</strong> Form to add supplements directly to the store with custom <strong>Product Image URL</strong>, Name, Category, Tier, Price, Lab Score, and Description.</li>
+    <li><strong>Manage Live Products:</strong> List of all products on the live website with thumbnail image and <strong>"✕ Remove"</strong> delete button.</li>
+    <li><strong>User Login Logs:</strong> Records login email addresses and timestamps.</li>
+  </ul>
+
+  <!-- SECTION 4 -->
+  <h1>4. Top Viva / Exam Questions & Model Answers</h1>
+  <div class="highlight-box">
+    <strong>Q1: What are the different user roles in your web project?</strong><br>
+    <em>Answer:</em> Our project has 3 user roles:
+    1. <strong>Normal User:</strong> Browses and purchases certified supplements on <code>index.html</code>.
+    2. <strong>Company User:</strong> Submits supplement proposals for blind testing on <code>company.html</code> and tracks application status.
+    3. <strong>Admin:</strong> Authenticates via password on <code>admin.html</code> to accept/reject company proposals, manage products with images, and view user logs.
+  </div>
+
+  <div class="highlight-box">
+    <strong>Q2: What happens when the Admin clicks "Accept" on a company proposal?</strong><br>
+    <em>Answer:</em> When the Admin clicks "Accept", the JavaScript function <code>acceptCompanyProposal()</code> prompts for a verified lab score, creates a product object, saves it in <code>nutrisure_my_products</code> (making it immediately visible in the live store <code>index.html</code>), and updates the company's proposal status to <code>ACCEPTED</code>.
+  </div>
+
+  <div class="highlight-box">
+    <strong>Q3: How is product image support implemented?</strong><br>
+    <em>Answer:</em> Each product object includes an optional <code>image</code> property containing a URL. The <code>renderProducts()</code> function checks if an image exists: if present, it renders an <code>&lt;img&gt;</code> tag with error handling; if absent, it falls back to category icons.
+  </div>
+
+  <hr style="margin-top: 30pt;">
+  <p style="text-align: center; font-size: 9.5pt; color: #64748b;">
+    <strong>NutriSure 3-Module Documentation</strong> • Created for BCA 2nd Year Examination & Viva Demonstration
+  </p>
+
+</body>
+</html>
