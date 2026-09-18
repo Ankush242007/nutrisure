@@ -105,16 +105,30 @@ function setupFirebaseFirestoreListeners() {
     if (!snapshot.empty) {
       products = [];
       snapshot.forEach(doc => {
-        products.push({ id: doc.id, ...doc.data() });
+        const data = doc.data();
+        products.push({
+          ...data,
+          id: doc.id,
+          docId: doc.id
+        });
       });
       localStorage.setItem('nutrisure_my_products', JSON.stringify(products));
       renderProducts();
       renderAdminProductList();
-    } else if (products.length > 0) {
-      // Seed initial products to Firestore if empty
-      products.forEach(p => {
-        db.collection('products').add(p).catch(() => {});
-      });
+    } else {
+      // If collection is empty, check if we should initialize once
+      const hasSeeded = localStorage.getItem('nutrisure_has_seeded');
+      if (!hasSeeded && products.length > 0) {
+        localStorage.setItem('nutrisure_has_seeded', 'true');
+        products.forEach(p => {
+          db.collection('products').add(p).catch(() => {});
+        });
+      } else {
+        products = [];
+        localStorage.setItem('nutrisure_my_products', JSON.stringify(products));
+        renderProducts();
+        renderAdminProductList();
+      }
     }
   }, (err) => {
     console.log("Firestore Products Realtime note (using local cache):", err.message);
@@ -125,7 +139,12 @@ function setupFirebaseFirestoreListeners() {
     if (!snapshot.empty) {
       companyRequests = [];
       snapshot.forEach(doc => {
-        companyRequests.push({ id: doc.id, ...doc.data() });
+        const data = doc.data();
+        companyRequests.push({
+          ...data,
+          id: doc.id,
+          docId: doc.id
+        });
       });
       localStorage.setItem('nutrisure_company_requests', JSON.stringify(companyRequests));
       renderCompanySubmissions();
@@ -410,36 +429,70 @@ function closeLoginModal() {
   if (modal) modal.classList.remove('active'); 
 }
 
-async function handleLogin(e) {
+// Track whether we're in login or signup mode
+let authMode = 'login';
+
+function toggleAuthMode(mode) {
+  authMode = mode;
+  const loginTab = document.getElementById('tab-auth-login');
+  const signupTab = document.getElementById('tab-auth-signup');
+  const subtitle = document.getElementById('auth-subtitle');
+  const submitBtn = document.getElementById('auth-submit-btn');
+  if (mode === 'login') {
+    if (loginTab) loginTab.classList.add('active');
+    if (signupTab) signupTab.classList.remove('active');
+    if (subtitle) subtitle.innerText = 'Sign in with your Firebase credentials';
+    if (submitBtn) submitBtn.innerText = 'Sign In to Firebase';
+  } else {
+    if (signupTab) signupTab.classList.add('active');
+    if (loginTab) loginTab.classList.remove('active');
+    if (subtitle) subtitle.innerText = 'Create a new Firebase account';
+    if (submitBtn) submitBtn.innerText = 'Create Account';
+  }
+}
+
+async function handleAuthSubmit(e) {
   e.preventDefault();
-  const email = document.getElementById('user-email').value;
+  const email = document.getElementById('user-email').value.trim();
   const password = document.getElementById('user-password').value;
+
+  // Block short passwords before sending to Firebase
+  if (password.length < 6) {
+    alert('❌ Password must be at least 6 characters long.');
+    return;
+  }
 
   if (isFirebaseOnline && auth) {
     try {
-      // 1. Try Signing In with Firebase Auth
-      await auth.signInWithEmailAndPassword(email, password);
-      alert(`🔥 Firebase Sign-In Successful as: ${email}`);
-    } catch (error) {
-      // 2. If user doesn't exist, automatically Register with Firebase Auth!
-      if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-        try {
-          await auth.createUserWithEmailAndPassword(email, password);
-          alert(`🎉 New Firebase Account Created & Logged in as: ${email}`);
-        } catch (regErr) {
-          alert(`Firebase Auth Notice: ${regErr.message}`);
-        }
+      if (authMode === 'signup') {
+        // Create a new Firebase account
+        await auth.createUserWithEmailAndPassword(email, password);
+        alert(`🎉 Account created & logged in as: ${email}\n\nYou can now see yourself in Firebase Console → Authentication!`);
       } else {
-        alert(`Firebase Auth Notice: ${error.message}`);
+        // Sign in to existing account
+        await auth.signInWithEmailAndPassword(email, password);
+        alert(`✅ Logged in successfully as: ${email}`);
       }
+    } catch (error) {
+      let msg = error.message;
+      if (error.code === 'auth/operation-not-allowed') {
+        msg = 'Email/Password login is NOT enabled in Firebase.\n\nFix: Go to Firebase Console → Authentication → Sign-in method → Enable Email/Password.';
+      } else if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+        msg = 'No account found for this email. Switch to "Create Account" tab to register.';
+      } else if (error.code === 'auth/wrong-password') {
+        msg = 'Wrong password. Please try again.';
+      } else if (error.code === 'auth/email-already-in-use') {
+        msg = 'This email already has an account. Switch to "Sign In" tab to log in.';
+      }
+      alert(`⚠️ ${msg}`);
+      return;
     }
   }
 
-  // Record user login log
+  // Record login in localStorage & Firestore
   const loginRecord = { email: email, date: new Date().toLocaleString() };
   userLogins.unshift(loginRecord);
   localStorage.setItem('nutrisure_user_logins', JSON.stringify(userLogins));
-  
   if (isFirebaseOnline && db) {
     db.collection('user_logins').add(loginRecord).catch(() => {});
   }
@@ -448,6 +501,9 @@ async function handleLogin(e) {
   updateUserLoginUI();
   closeLoginModal();
 }
+
+// Keep old name as alias (for any old references)
+async function handleLogin(e) { return handleAuthSubmit(e); }
 
 // Google Sign-In with Firebase
 async function handleGoogleSignIn() {
@@ -782,15 +838,32 @@ async function adminAddNewProduct(e) {
 // 3. Admin Manage Products (Remove Product)
 async function removeProduct(productId) {
   if (confirm('Are you sure you want to delete this product from the store?')) {
+    // 1. Instantly remove from local memory & localStorage
+    products = products.filter(p => p.id !== productId && p.docId !== productId);
+    saveProducts();
+    renderAdminProductList();
+    renderProducts();
+
+    // 2. Delete from Firebase Cloud Firestore
     if (isFirebaseOnline && db) {
       try {
         await db.collection('products').doc(productId).delete();
-      } catch(e) {}
+      } catch(err) {
+        console.warn("Firestore doc delete notice:", err);
+      }
+
+      // Also search and delete by matching field id
+      try {
+        const querySnapshot = await db.collection('products').where('id', '==', productId).get();
+        querySnapshot.forEach(async (doc) => {
+          await doc.ref.delete();
+        });
+      } catch(err) {
+        console.warn("Firestore query delete notice:", err);
+      }
     }
-    products = products.filter(p => p.id !== productId);
-    saveProducts();
-    renderAdminProductList();
-    alert('Product removed from store!');
+
+    alert('✅ Product removed from store successfully!');
   }
 }
 
