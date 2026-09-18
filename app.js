@@ -105,16 +105,30 @@ function setupFirebaseFirestoreListeners() {
     if (!snapshot.empty) {
       products = [];
       snapshot.forEach(doc => {
-        products.push({ id: doc.id, ...doc.data() });
+        const data = doc.data();
+        products.push({
+          ...data,
+          id: doc.id,
+          docId: doc.id
+        });
       });
       localStorage.setItem('nutrisure_my_products', JSON.stringify(products));
       renderProducts();
       renderAdminProductList();
-    } else if (products.length > 0) {
-      // Seed initial products to Firestore if empty
-      products.forEach(p => {
-        db.collection('products').add(p).catch(() => {});
-      });
+    } else {
+      // If collection is empty, check if we should initialize once
+      const hasSeeded = localStorage.getItem('nutrisure_has_seeded');
+      if (!hasSeeded && products.length > 0) {
+        localStorage.setItem('nutrisure_has_seeded', 'true');
+        products.forEach(p => {
+          db.collection('products').add(p).catch(() => {});
+        });
+      } else {
+        products = [];
+        localStorage.setItem('nutrisure_my_products', JSON.stringify(products));
+        renderProducts();
+        renderAdminProductList();
+      }
     }
   }, (err) => {
     console.log("Firestore Products Realtime note (using local cache):", err.message);
@@ -125,7 +139,12 @@ function setupFirebaseFirestoreListeners() {
     if (!snapshot.empty) {
       companyRequests = [];
       snapshot.forEach(doc => {
-        companyRequests.push({ id: doc.id, ...doc.data() });
+        const data = doc.data();
+        companyRequests.push({
+          ...data,
+          id: doc.id,
+          docId: doc.id
+        });
       });
       localStorage.setItem('nutrisure_company_requests', JSON.stringify(companyRequests));
       renderCompanySubmissions();
@@ -782,15 +801,32 @@ async function adminAddNewProduct(e) {
 // 3. Admin Manage Products (Remove Product)
 async function removeProduct(productId) {
   if (confirm('Are you sure you want to delete this product from the store?')) {
+    // 1. Instantly remove from local memory & localStorage
+    products = products.filter(p => p.id !== productId && p.docId !== productId);
+    saveProducts();
+    renderAdminProductList();
+    renderProducts();
+
+    // 2. Delete from Firebase Cloud Firestore
     if (isFirebaseOnline && db) {
       try {
         await db.collection('products').doc(productId).delete();
-      } catch(e) {}
+      } catch(err) {
+        console.warn("Firestore doc delete notice:", err);
+      }
+
+      // Also search and delete by matching field id
+      try {
+        const querySnapshot = await db.collection('products').where('id', '==', productId).get();
+        querySnapshot.forEach(async (doc) => {
+          await doc.ref.delete();
+        });
+      } catch(err) {
+        console.warn("Firestore query delete notice:", err);
+      }
     }
-    products = products.filter(p => p.id !== productId);
-    saveProducts();
-    renderAdminProductList();
-    alert('Product removed from store!');
+
+    alert('✅ Product removed from store successfully!');
   }
 }
 
